@@ -24,7 +24,12 @@ LINE = "My AI assistant asked for a raise, so I replaced it with a Magic 8-Ball.
 
 
 def main() -> None:
-    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
+    # Gate: the entry must be UTF-8 text of 1 to 200 characters, not only
+    # white space. Refuse to write an invalid line rather than hand the
+    # judge a file that scores 0.
+    assert 1 <= len(LINE) <= 200, "entry line outside the 1-200 character gate"
+    assert LINE.strip(), "entry line must not be only white space"
+    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output") or "/output"
     os.makedirs(out_dir, exist_ok=True)
     with open(os.path.join(out_dir, "entry.txt"), "w", encoding="utf-8") as f:
         f.write(LINE)
